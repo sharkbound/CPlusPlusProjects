@@ -14,6 +14,8 @@ class FileManager
 public:
 	char* fname = "log.log";
 	Misc m;
+	ofstream logf;
+	int DirLoopHighestIter = 0;
 	FileManager();
 	~FileManager();
 
@@ -48,7 +50,8 @@ public:
 					entry = readdir(folder);
 					continue;
 				}
-				
+				if (iteration > DirLoopHighestIter) DirLoopHighestIter = iteration;
+
 				//print the directory to console then move into next directory
 				string logText(BuildArrow("-", ">", arrowLength) + " [" + DirName + " : " + to_string(iteration) + "]\n");
 				cout << logText;
@@ -60,10 +63,16 @@ public:
 		closedir(folder);
 	}
 
-	void LogToFile(string msg, string prefix = " [INFO] ") {
-		ofstream logf("log.log");
-		logf << prefix << msg << endl;
+	void ConnectToLogFile() {
+		this->logf = ofstream("log.log");
+	}
+
+	void CloseLogFile() {
 		logf.close();
+	}
+
+	void LogToFile(string msg, string prefix = " [INFO] ") {
+		logf << prefix << msg;
 	}
 };
 
